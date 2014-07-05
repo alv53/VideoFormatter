@@ -52,6 +52,8 @@ for i in range(len(Files)):
 			Appended = option
 			if "720" in option:
 				Appended = "[720p]"
+			elif "1080" in option:
+				Appended = "[1080p]"
 			NewExtension = Appended + NewExtension
 			HasRes = True
 			BoxedRes = option
