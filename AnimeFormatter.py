@@ -1,9 +1,6 @@
 import sys, os, re
 
 # Ending format will be [AnimeName] [Episode #] [FileEnding]
-# Optional options are [Resolution]
-# Make CurrFileName and NewName the same if you just want to format the anime
-
 # Make sure we have the correct format for the command line arguments
 if len(sys.argv) != 2:
 	print "Usage: python " + os.path.basename(__file__) + " [directory with files]"
