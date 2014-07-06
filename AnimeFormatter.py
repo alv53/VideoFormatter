@@ -38,8 +38,24 @@ for curr in Files:
 	print curr
 
 # Get names to use when parsing
-print "\nCurrent Anime Name?"
-Name = raw_input()
+DirList = os.getcwd().split('/')
+Name = DirList[len(DirList) - 1]
+	
+print "\nCurrent Anime Name? (default: " + Name + ")"
+ParsedName = raw_input()
+if not ParsedName == "":
+	print ParsedName + " : " + Name
+	if not ParsedName == Name:
+		Response = ""
+		while not (Response == 'y' or Response == 'n'):
+			print "\nWould you like to rename the folder to: " + ParsedName + "? (y - yes/n - no)"
+			Response = raw_input()
+		if Response =='y':
+			os.chdir("..")
+			os.rename(Name, ParsedName)	
+			os.chdir(ParsedName)
+		Name = ParsedName
+
 print "\nNew Anime Name? (default: same as current)"
 New = raw_input()
 if New == "":
@@ -65,6 +81,10 @@ for i in range(len(Files)):
 		Appended = " [720p]" 
 	if "1080" in NewName:
 		Appended = " [1080p]"
+
+	NewName = NewName.replace('-', ' ')
+	NewName = NewName.replace('_', ' ')
+	NewName = NewName.replace('.', ' ')
 	
 	while "  " in NewName:
 		NewName = NewName.replace("  "," ")
@@ -97,18 +117,18 @@ Responded = False
 while not Responded:
 	for i in range(len(Files)):
 		print ("%d) " + Files[i] + " ---> " + NewNames[i]) % i
-	print "\nAre these new file names acceptable? (y/n/s) (yes/no/some)"
+	print "\nAre these new file names acceptable? (y - yes/n - no/s - some)"
 	Response = raw_input()
 	if (Response == 'y' or Response =='n'):
 		Responded = True
 	if Response == 's':
-		print "Which files do you not want to alter? Seperate the numbers with a space (1 4 20)"
+		print "\nWhich files do you not want to alter? Seperate the numbers with a space (1 4 20)"
 		ManuallyChange = raw_input()
 		# while ManuallyChange
 		ManList = ManuallyChange.split(' ')
 		for ToChange in ManList:
-			print "Enter new name for %d) %s ---> %s" % (int(ToChange), OldNames[int(ToChange)], NewNames[int(ToChange)])
-			
+			print "\nEnter new name for %d) %s ---> %s" % (int(ToChange), OldNames[int(ToChange)], NewNames[int(ToChange)])
+			print "Default will be unchanged\n"
 			Result = raw_input()
 			if not Result == "":
 				NewNames[int(ToChange)] = Result
@@ -123,6 +143,5 @@ print "\nRenaming files..."
 # print len(Files)
 # print len(NewNames)
 for i in range(len(Files)):
-	print (Files[i] + " ---> " + NewNames[i])
 	os.rename(Files[i], NewNames[i])
 
