@@ -5,16 +5,30 @@ import sys, os, re
 if len(sys.argv) != 2:
 	print "Usage: python " + os.path.basename(__file__) + " [directory with files]"
 	sys.exit()
-
+currDir = os.getcwd()
+os.chdir(os.path.expanduser("~/Shared/AnimeFormatter"))
+log = open('log.txt', 'a')
+os.chdir(currDir)
 # get to directory
 DirToRename = sys.argv[1]
 os.chdir(DirToRename)
 AllFiles = os.listdir('.')
 
-# Print the files
-print "\nFiles in: " + DirToRename
-for curr in AllFiles:
-	print curr
+Responded = False
+while not Responded:
+	# Print the files
+	print "\nFiles in: " + DirToRename
+	for i in range(len(AllFiles)):
+		print "%d) %s"%(i, AllFiles[i])
+	print "\nExclude any of the above?(List numbers, 'n' or '' for all ok)"
+	Response = raw_input()
+	if Response == 'n' or Response == '':
+		Responded = True
+	else:
+		ExcludeListInds = Response.split(' ')
+		ExcludeList = [AllFiles[int(ind)] for ind in ExcludeListInds]
+		AllFiles = [f for f in AllFiles if f not in ExcludeList]
+
 
 # Get extension(s) from user
 print "\nFile extension(s)? (default: mkv) (Seperate with a space if multiple)"
@@ -80,6 +94,8 @@ for i in range(len(Files)):
 		Appended = " [720p]" 
 	if "1080" in NewName:
 		Appended = " [1080p]"
+	if "480" in NewName:
+		Appended = " [480p]"
 
 	NewName = NewName.replace('-', ' ')
 	NewName = NewName.replace('_', ' ')
@@ -112,10 +128,14 @@ for i in range(len(Files)):
 	# Print it
 
 # Check with user before altering files
+templog = ""
 Responded = False
 while not Responded:
+	templog = ""
 	for i in range(len(Files)):
-		print ("%d) " + Files[i] + " ---> " + NewNames[i]) % i
+		line = ("%d) " + Files[i] + " ---> " + NewNames[i]) % i 
+		print line
+		templog += line + "\n"
 	print "\nAre these new file names acceptable? (y - yes/n - no/s - some)"
 	Response = raw_input()
 	if (Response == 'y' or Response =='n'):
@@ -137,6 +157,8 @@ if Response == 'n':
 	print "\nOk, bye!"
 	sys.exit()
 
+log.write(templog + "\n")
+log.close()
 print "\nRenaming files..."
 # Rename all the files
 # print len(Files)
