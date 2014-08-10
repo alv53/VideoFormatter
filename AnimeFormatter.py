@@ -44,7 +44,6 @@ Name = DirList[len(DirList) - 1]
 print "\nCurrent Anime Name? (default: " + Name + ")"
 ParsedName = raw_input()
 if not ParsedName == "":
-	print ParsedName + " : " + Name
 	if not ParsedName == Name:
 		Response = ""
 		while not (Response == 'y' or Response == 'n'):
@@ -56,7 +55,7 @@ if not ParsedName == "":
 			os.chdir(ParsedName)
 		Name = ParsedName
 
-print "\nNew Anime Name? (default: same as current)"
+print "\nNew Anime Name? (default: " + Name + ")"
 New = raw_input()
 if New == "":
 	New = Name
