@@ -14,22 +14,6 @@ DirToRename = sys.argv[1]
 os.chdir(DirToRename)
 AllFiles = os.listdir('.')
 
-Responded = False
-while not Responded:
-	# Print the files
-	print "\nFiles in: " + DirToRename
-	for i in range(len(AllFiles)):
-		print "%d) %s"%(i, AllFiles[i])
-	print "\nExclude any of the above?(List numbers, 'n' or '' for all ok)"
-	Response = raw_input()
-	if Response == 'n' or Response == '':
-		Responded = True
-	else:
-		ExcludeListInds = Response.split(' ')
-		ExcludeList = [AllFiles[int(ind)] for ind in ExcludeListInds]
-		AllFiles = [f for f in AllFiles if f not in ExcludeList]
-
-
 # Get extension(s) from user
 print "\nFile extension(s)? (default: mkv) (Seperate with a space if multiple)"
 Extension = raw_input()
@@ -48,9 +32,21 @@ for curr in AllFiles:
 			Files.append(curr)
 
 print "\nFiles with the extension(s): " + Extension
-for curr in Files:
-	print curr
-
+Responded = False
+while not Responded:
+	# Print the files
+	print "\nFiles in: " + DirToRename
+	for i in range(len(Files)):
+		print "%d) %s"%(i, Files[i])
+	print "\nExclude any of the above?(List numbers, 'n' or '' for all ok)"
+	Response = raw_input()
+	if Response == 'n' or Response == '':
+		Responded = True
+	else:
+		ExcludeListInds = Response.split(' ')
+		ExcludeList = [Files[int(ind)] for ind in ExcludeListInds]
+		Files = [f for f in Files if f not in ExcludeList]
+		
 # Get names to use when parsing
 DirList = os.getcwd().split('/')
 Name = DirList[len(DirList) - 1]
