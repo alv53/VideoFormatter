@@ -74,7 +74,28 @@ print "\n"
 # NewNames will store all the new names, so the user can confirm before changing the file names
 NewNames = list()
 OldNames = list()
+EpisodeNumbers = list()
 # Loop through all the files
+
+NumDigits = 0
+
+for i in range(len(Files)):
+	NewName = Files[i]
+	
+	# Get episode number
+	EpisodeStart = NewName.find(Name) + len(Name) + 1
+	AfterName = NewName[EpisodeStart:]
+	Search = re.search("\d", AfterName)
+	if not Search:
+		print "Error parsing episode number"
+		sys.exit()
+	Start = AfterName[Search.start():]
+	Search = re.search("\D", Start)
+	EpisodeNum = Start[:Search.start()]
+	EpisodeNumbers.append(EpisodeNum)	
+	if len(str(EpisodeNum)) > NumDigits:
+		NumDigits = len(str(EpisodeNum))
+
 for i in range(len(Files)):
 	OldNames.append(Files[i])
 	NewName = Files[i]
@@ -100,28 +121,21 @@ for i in range(len(Files)):
 	while "  " in NewName:
 		NewName = NewName.replace("  "," ")
 
-	# Get episode number
-	EpisodeStart = NewName.find(Name) + len(Name) + 1
-	AfterName = NewName[EpisodeStart:]
-	Search = re.search("\d", AfterName)
-	if not Search:
-		print "Error parsing episode number"
-		sys.exit()
-	Start = AfterName[Search.start():]
-	Search = re.search("\D", Start)
-	EpisodeNum = Start[:Search.start()]
-
-	# I dislike leading 0s
-	while EpisodeNum.startswith('0'):
-		EpisodeNum = EpisodeNum[1:]
-
+	## Add Leading 0s
+	# while len(str(EpisodeNumbers[i])) < NumDigits:
+	# 	EpisodeNumbers[i] = "0" + EpisodeNumbers[i]
+	
+	# Remove leading 0's
+	while EpisodeNumbers[i][0] == '0':
+		if len(EpisodeNumbers[i]) != 1:
+			EpisodeNumbers[i] = EpisodeNumbers[i][1:]
+			
 	# Combine the name, the number, and the extension
-	NewName = New + " - " + EpisodeNum + Appended + Ext
-
+	NewName = New + " - " + EpisodeNumbers[i] + Appended + Ext
+	EpisodeNumbers.append(EpisodeNum)
 	# Add to our list of new names
 	NewNames.append(NewName)
 
-	# Print it
 
 # Check with user before altering files
 templog = ""
