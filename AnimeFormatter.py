@@ -13,12 +13,11 @@ os.chdir(currDir)
 DirToRename = sys.argv[1]
 os.chdir(DirToRename)
 AllFiles = os.listdir('.')
-
+print "\nAll Files in %s"%(DirToRename)
+for File in AllFiles:
+	print File
 # Get extension(s) from user
-print "\nFile extension(s)? (default: mkv) (Seperate with a space if multiple)"
-Extension = raw_input()
-if Extension == "":
-	Extension = "mkv"
+Extension = "mkv mp4 m2ts avi"
 Extensions = Extension.split(' ')
 for Ext in Extensions:
 	if not Ext.startswith('.'):
@@ -51,25 +50,19 @@ while not Responded:
 DirList = os.getcwd().split('/')
 Name = DirList[len(DirList) - 1]
 	
-print "\nCurrent Anime Name? (default: " + Name + ")"
-ParsedName = raw_input()
-if not ParsedName == "":
-	if not ParsedName == Name:
-		Response = ""
-		while not (Response == 'y' or Response == 'n'):
-			print "\nWould you like to rename the folder to: " + ParsedName + "? (y - yes/n - no)"
-			Response = raw_input()
-		if Response =='y':
-			os.chdir("..")
-			os.rename(Name, ParsedName)	
-			os.chdir(ParsedName)
-		Name = ParsedName
-
-print "\nNew Anime Name? (default: " + Name + ")"
-New = raw_input()
-if New == "":
-	New = Name
-print "\n"
+# print "\nCurrent Anime Name? (default: " + Name + ")"
+# ParsedName = raw_input()
+# if not ParsedName == "":
+# 	if not ParsedName == Name:
+# 		Response = ""
+# 		while not (Response == 'y' or Response == 'n'):
+# 			print "\nWould you like to rename the folder to: " + ParsedName + "? (y - yes/n - no)"
+# 			Response = raw_input()
+# 		if Response =='y':
+# 			os.chdir("..")
+# 			os.rename(Name, ParsedName)	
+# 			os.chdir(ParsedName)
+# 		Name = ParsedName
 
 # NewNames will store all the new names, so the user can confirm before changing the file names
 NewNames = list()
@@ -121,17 +114,17 @@ for i in range(len(Files)):
 	while "  " in NewName:
 		NewName = NewName.replace("  "," ")
 
-	## Add Leading 0s
-	# while len(str(EpisodeNumbers[i])) < NumDigits:
-	# 	EpisodeNumbers[i] = "0" + EpisodeNumbers[i]
+	# Add Leading 0s
+	while len(str(EpisodeNumbers[i])) < NumDigits:
+		EpisodeNumbers[i] = "0" + EpisodeNumbers[i]
 	
-	# Remove leading 0's
-	while EpisodeNumbers[i][0] == '0':
-		if len(EpisodeNumbers[i]) != 1:
-			EpisodeNumbers[i] = EpisodeNumbers[i][1:]
+	# # Remove leading 0's
+	# while EpisodeNumbers[i][0] == '0':
+	# 	if len(EpisodeNumbers[i]) != 1:
+	# 		EpisodeNumbers[i] = EpisodeNumbers[i][1:]
 			
 	# Combine the name, the number, and the extension
-	NewName = New + " - " + EpisodeNumbers[i] + Appended + Ext
+	NewName = Name + " - " + EpisodeNumbers[i] + Appended + Ext
 	EpisodeNumbers.append(EpisodeNum)
 	# Add to our list of new names
 	NewNames.append(NewName)
