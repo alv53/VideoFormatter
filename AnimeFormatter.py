@@ -26,6 +26,9 @@ def GetNewNames(Files):
 		Start = AfterName[Search.start():]
 		Search = re.search("\D", Start)
 		EpisodeNum = Start[:Search.start()]
+		# Remove prepending 0s for calculating number of digits
+		while EpisodeNum[0] == '0':
+			EpisodeNum = EpisodeNum[1:]
 		EpisodeNumbers.append(EpisodeNum)	
 		if len(str(EpisodeNum)) > NumDigits:
 			NumDigits = len(str(EpisodeNum))
@@ -54,7 +57,7 @@ def GetNewNames(Files):
 		while "  " in NewName:
 			NewName = NewName.replace("  "," ")
 
-		# Add Leading 0s
+		# Add Leading 0s so all episode numbers have the same length
 		while len(str(EpisodeNumbers[i])) < NumDigits:
 			EpisodeNumbers[i] = "0" + EpisodeNumbers[i]
 		
