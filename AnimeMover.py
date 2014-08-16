@@ -1,8 +1,8 @@
 import sys, os
 
 # First move all the mkv files into the Ongoing Anime folder
-home = os.path.expanduser("~/Desktop")
-os.chdir(home)
+Desktop = os.path.expanduser("~/Desktop")
+os.chdir(Desktop)
 AllItems = os.listdir(".")
 Mkvs = []
 for item in AllItems:
