@@ -63,6 +63,7 @@ def GetNewNames(Files):
 		
 		# Combine the name, the number, and the extension
 		NewName = Name + " - " + EpisodeNumbers[i] + Appended + Ext
+
 		EpisodeNumbers.append(EpisodeNum)
 		# Add to our list of new names
 		NewNames.append(NewName)
@@ -135,10 +136,11 @@ while not Responded:
 	# reset log line in case we do not like these changes
 	templog = ""
 	for i in range(len(Files)):
-		line = ("%d) " + Files[i] + " ---> " + NewNames[i]) % i 
-		print line
-		templog += line + "\n"
-	print "\nAre these new file names acceptable? (y - yes/n - no/file numbers to alter)"
+		if not Files[i] == NewNames[i]:
+			line = ("%d) " + Files[i] + " ---> " + NewNames[i]) % i 
+			print line
+			templog += line + "\n"
+	print "\nAre these new file names acceptable? (y - yes/n - no/file #s to alter). Unchanged lines will not appear."
 	Response = raw_input()
 	if (Response == 'y' or Response =='n'):
 		Responded = True
@@ -166,7 +168,8 @@ if Response == 'n':
 	print "\nOk, bye!"
 	sys.exit()
 
-log.write(templog + "\n")
+if not templog == "":
+	log.write(templog + "\n")
 log.close()
 print "\nRenaming files..."
 for i in range(len(Files)):
