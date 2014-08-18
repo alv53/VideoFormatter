@@ -1,73 +1,71 @@
-import sys, os, re
-def deepcopy(A):
-    rt = []
-    for elem in A:
-        if isinstance(elem,list):
-            rt.append(deepcopy(elem))
-        else:
-            rt.append(elem)
-    return rt
+import sys, os, re, datetime
 
-def GetNewNames(Files):
-	NewNames = list()
-	EpisodeNumbers = list()
-	NumDigits = 0
 
-	for i in range(len(Files)):
-		NewName = Files[i]
+def AddLeadingChars(value, maxLen, leadingChar):
+	returnVal = value
+	while len(returnVal) < maxLen:
+		returnVal = leadingChar + returnVal 
+	return returnVal
+
+def GetNewNames(files):
+	newNames = list()
+	episodeNumbers = list()
+	numDigits = 0
+
+	for i in range(len(files)):
+		newName = files[i]
 		
 		# Get episode number
-		EpisodeStart = NewName.find(Name) + len(Name) + 1
-		AfterName = NewName[EpisodeStart:]
-		Search = re.search("\d", AfterName)
-		if not Search:
+		episodeStart = newName.find(name) + len(name) + 1
+		newName = newName[episodeStart:]
+		search = re.search("\d", newName)
+		if not search:
 			print "Error parsing episode number"
 			sys.exit()
-		Start = AfterName[Search.start():]
-		Search = re.search("\D", Start)
-		EpisodeNum = Start[:Search.start()]
+		start = newName[search.start():]
+		search = re.search("\D", start)
+		episodeNumber = start[:search.start()]
 		# Remove prepending 0s for calculating number of digits
-		while EpisodeNum[0] == '0':
-			EpisodeNum = EpisodeNum[1:]
-		EpisodeNumbers.append(EpisodeNum)	
-		if len(str(EpisodeNum)) > NumDigits:
-			NumDigits = len(str(EpisodeNum))
+		while episodeNumber[0] == '0':
+			episodeNumber = episodeNumber[1:]
+		episodeNumbers.append(episodeNumber)	
+		if len(str(episodeNumber)) > numDigits:
+			numDigits = len(str(episodeNumber))
 			
-	for i in range(len(Files)):
-		NewName = Files[i]
+	for i in range(len(files)):
+		newName = files[i]
 
 		# Get file extension
-		StringList = NewName.split('.')
-		Ext = StringList[len(StringList) - 1]
-		Ext = '.' + Ext
+		stringList = newName.split('.')
+		ext = stringList[len(stringList) - 1]
+		ext = '.' + ext
 
-		Appended = ""
+		appended = ""
 		# Add resolution
-		if "720" in NewName:
-			Appended = " [720p]" 
-		if "1080" in NewName:
-			Appended = " [1080p]"
-		if "480" in NewName:
-			Appended = " [480p]"
+		if "720" in newName:
+			appended = " [720p]" 
+		if "1080" in newName:
+			appended = " [1080p]"
+		if "480" in newName:
+			appended = " [480p]"
 
-		NewName = NewName.replace('-', ' ')
-		NewName = NewName.replace('_', ' ')
-		NewName = NewName.replace('.', ' ')
+		newName = newName.replace('-', ' ')
+		newName = newName.replace('_', ' ')
+		newName = newName.replace('.', ' ')
 		
-		while "  " in NewName:
-			NewName = NewName.replace("  "," ")
+		while "  " in newName:
+			newName = newName.replace("  "," ")
 
 		# Add Leading 0s so all episode numbers have the same length
-		while len(str(EpisodeNumbers[i])) < NumDigits:
-			EpisodeNumbers[i] = "0" + EpisodeNumbers[i]
-		
-		# Combine the name, the number, and the extension
-		NewName = Name + " - " + EpisodeNumbers[i] + Appended + Ext
+		AddLeadingChars(episodeNumbers[i],numDigits,"0")
 
-		EpisodeNumbers.append(EpisodeNum)
+		# Combine the name, the number, and the extension
+		newName = name + " - " + episodeNumbers[i] + appended + ext
+
+		episodeNumbers.append(episodeNumber)
 		# Add to our list of new names
-		NewNames.append(NewName)
-	return NewNames
+		newNames.append(newName)
+	return newNames
 
 # Ending format will be [AnimeName] - [Episode #] [Resolution if applicable].extension
 # Make sure we have the correct format for the command line arguments
@@ -76,102 +74,112 @@ if len(sys.argv) != 2:
 	sys.exit()
 currDir = os.getcwd()
 os.chdir(os.path.expanduser("~/Shared/AnimeFormatter"))
-log = open('log.txt', 'a')
+
+# Get current date for log
+time = datetime.datetime.now()
+date = AddLeadingChars(str(time.month),2,"0") + "-" + AddLeadingChars(str(time.day),2,"0") + "-" + str(time.year)
+print date
+
+# Get the correct log open
+logName = "logs/" + date + ".txt"
+log = open(logName, 'a+')
+
 os.chdir(currDir)
 # get to directory
-DirToRename = sys.argv[1]
-os.chdir(DirToRename)
-AllFiles = os.listdir('.')
-print "\nAll Files in %s"%(DirToRename)
-for File in AllFiles:
+dirToRename = sys.argv[1]
+os.chdir(dirToRename)
+allFiles = os.listdir('.')
+print "\nAll files in %s"%(dirToRename)
+for File in allFiles:
 	print File
 # Get extension(s) from user
-Extension = "mkv mp4 m2ts avi"
-Extensions = Extension.split(' ')
-for Ext in Extensions:
-	if not Ext.startswith('.'):
-		Ext = '.' + Ext
+extension = "mkv mp4 m2ts avi"
+extensions = extension.split(' ')
+for ext in extensions:
+	if not ext.startswith('.'):
+		ext = '.' + ext
 
 # Get files ending in the appropriate extension(s)
-Files = list()
-for curr in AllFiles:
-	for Ext in Extensions:
-		if curr.endswith(Ext):
-			Files.append(curr)
+files = list()
+for curr in allFiles:
+	for ext in extensions:
+		if curr.endswith(ext):
+			files.append(curr)
 
-print "\nFiles with the extension(s): " + Extension
-Responded = False
-while not Responded:
+print "\nFiles with the extension(s): " + extension
+responded = False
+while not responded:
 	# Print the files
-	print "\nFiles in: " + DirToRename
-	for i in range(len(Files)):
-		print "%d) %s"%(i, Files[i])
+	print "\nFiles in: " + dirToRename
+	for i in range(len(files)):
+		print "%d) %s"%(i, files[i])
 	print "\nExclude any of the above?(List numbers, 'n' or '' for all ok)"
-	Response = raw_input()
-	if Response == 'n' or Response == '':
-		Responded = True
+	response = raw_input()
+	if response == 'n' or response == '':
+		responded = True
 	else:
-		ExcludeListInds = Response.split(' ')
-		ExcludeList = [Files[int(ind)] for ind in ExcludeListInds]
-		Files = [f for f in Files if f not in ExcludeList]
+		ExcludeListInds = response.split(' ')
+		ExcludeList = [files[int(ind)] for ind in ExcludeListInds]
+		files = [f for f in files if f not in ExcludeList]
 		
 # Get names to use when parsing
-DirList = os.getcwd().split('/')
-Name = DirList[len(DirList) - 1]
+dirList = os.getcwd().split('/')
+name = dirList[len(dirList) - 1]
 
 # Save old names
 OldNames = list()
-for i in range(len(Files)):
-	OldNames.append(Files[i])
+for i in range(len(files)):
+	OldNames.append(files[i])
 
 # Get new names
-NewNames = GetNewNames(Files)
+newNames = GetNewNames(files)
 
 # Check with user before altering files
 templog = ""
-Responded = False
+responded = False
 
-# We do altar Files, but not undo the changes after getting the new names
-while not Responded:
+# We do altar files, but not undo the changes after getting the new names
+while not responded:
 	# reset log line in case we do not like these changes
 	templog = ""
-	for i in range(len(Files)):
-		if not Files[i] == NewNames[i]:
-			line = ("%d) " + Files[i] + " ---> " + NewNames[i]) % i 
+	for i in range(len(files)):
+		if not files[i] == newNames[i]:
+			line = ("%d) " + files[i] + " ---> " + newNames[i]) % i 
 			print line
 			templog += line + "\n"
 	print "\nAre these new file names acceptable? (y - yes/n - no/file #s to alter). Unchanged lines will not appear."
-	Response = raw_input()
-	if (Response == 'y' or Response =='n'):
-		Responded = True
-	elif Response != "":
+	response = raw_input()
+	if (response == 'y' or response =='n'):
+		responded = True
+	elif response != "":
 		# Get new names manually
-		ManList = Response.split(' ')
+		ManList = response.split(' ')
 		TempNames = list()
 		for ToChange in ManList:
-			print "\nEnter new name for %d) %s ---> %s" % (int(ToChange), OldNames[int(ToChange)], NewNames[int(ToChange)])
+			print "\nEnter new name for %d) %s ---> %s" % (int(ToChange), OldNames[int(ToChange)], newNames[int(ToChange)])
 			print "Default will be unchanged\n"
 			Result = raw_input()
 			if not Result == "":
 				TempNames.append(Result)
 
 		# Hide the ones we are manually changing before updating names. This makes sure the episode numbers are set correctly.
-		Files.pop(int(ToChange))
-		NewNames = GetNewNames(Files)
+		files.pop(int(ToChange))
+		newNames = GetNewNames(files)
 
-		# Insert the manually changed values to NewNames and back to Files
+		# Insert the manually changed values to newNames and back to files
 		for ToChange in ManList:
-			NewNames.insert(int(ToChange), TempNames.pop(0))
-		Files.insert(int(ToChange), OldNames[int(ToChange)])
+			newNames.insert(int(ToChange), TempNames.pop(0))
+		files.insert(int(ToChange), OldNames[int(ToChange)])
 
-if Response == 'n':
+if response == 'n':
 	print "\nOk, bye!"
 	sys.exit()
 
 if not templog == "":
+	templog = AddLeadingChars(str(time.hour),2,"0") + ":" + AddLeadingChars(str(time.minute),2,"0") + "\n" + templog
 	log.write(templog + "\n")
 log.close()
 print "\nRenaming files..."
-for i in range(len(Files)):
-	os.rename(Files[i], NewNames[i])
+for i in range(len(files)):
+	os.rename(files[i], newNames[i])
 
