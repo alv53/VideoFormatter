@@ -75,14 +75,7 @@ if len(sys.argv) != 2:
 currDir = os.getcwd()
 os.chdir(os.path.expanduser("~/Shared/AnimeFormatter"))
 
-# Get current date for log
-time = datetime.datetime.now()
-date = AddLeadingChars(str(time.month),2,"0") + "-" + AddLeadingChars(str(time.day),2,"0") + "-" + str(time.year)
-print date
-
-# Get the correct log open
-logName = "logs/" + date + ".txt"
-log = open(logName, 'a+')
+log = open("log.txt", 'a+')
 
 os.chdir(currDir)
 # get to directory
@@ -138,7 +131,7 @@ newNames = GetNewNames(files)
 templog = ""
 responded = False
 
-# We do altar files, but not undo the changes after getting the new names
+# We do alter files, but not undo the changes after getting the new names
 while not responded:
 	# reset log line in case we do not like these changes
 	templog = ""
@@ -175,8 +168,13 @@ if response == 'n':
 	print "\nOk, bye!"
 	sys.exit()
 
-if not templog == "":
-	templog = AddLeadingChars(str(time.hour),2,"0") + ":" + AddLeadingChars(str(time.minute),2,"0") + "\n" + templog
+if not templog == "":	
+	time = datetime.datetime.now()
+	dateStamp = AddLeadingChars(str(time.month),2,"0") + "-" + AddLeadingChars(str(time.day),2,"0") + "-" + str(time.year)
+	timeStamp = AddLeadingChars(str(time.hour),2,"0") + ":" + AddLeadingChars(str(time.minute),2,"0")
+	if dirToRename.endswith('/'):
+		dirToRename = dirToRename[:len(dirToRename)-1]
+	templog =  "Formatting " + dirToRename + " - " + dateStamp + " " + timeStamp + "\n" + templog
 	log.write(templog + "\n")
 log.close()
 print "\nRenaming files..."
