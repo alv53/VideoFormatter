@@ -57,7 +57,7 @@ def GetNewNames(files):
 			newName = newName.replace("  "," ")
 
 		# Add Leading 0s so all episode numbers have the same length
-		AddLeadingChars(episodeNumbers[i],numDigits,"0")
+		episodeNumbers[i] = AddLeadingChars(episodeNumbers[i],numDigits,"0")
 
 		# Combine the name, the number, and the extension
 		newName = name + " - " + episodeNumbers[i] + appended + ext
