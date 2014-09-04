@@ -1,14 +1,10 @@
-Python script to rename anime video files to look cleaner.
+Python script to rename video files to look cleaner.
 
-There are several scripts in this project
+The one script has multiple functionalities
 
-python AnimeFormatter.py [Directory with video files]
-python AnimeMover.py
-python FormatDirectory [Directory with directories to call AnimeFormatter.py on]
-FormatUndo.py [Directory to undo changes on] (Still a work in progress)
+Usage: ./VideoFormatter.py [Command (FD, VM, FS, FU)] [Any other commands]
+FD = Format Directory: Formats the given directory
+VM = Moves all videos from the gisven directory into a certain folder, and sorts them into their respective sub folders
+FS = Format Subdirectories: Formats an entire directory's subdirectories using VF
+FU = Format Undo: Undoes the most recent change recorded on the log for a given directory
 
-Then just follow the in terminal instructions
-
-This script only works with certain formats that I've tested, so feel free to modify the code to suit your own needs, and for any edge cases that you may come across. If you want you can email me at alvjou@gmail.com with your changes!
-
-Video demo: https://www.youtube.com/watch?v=Dbh22TdRjzs (Old version now, Many new features added, but no updated video)
