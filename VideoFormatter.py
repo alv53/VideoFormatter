@@ -364,7 +364,7 @@ def FormatUndo(dirToUndo):
 def PrintUsage():
 	print "Usage: python " + os.path.basename(__file__) + " [Command (FD, VM, FS, FU)]"
 	print "FD = Format Directory: Formats the given directory"
-	print "VM = Moves all videos from the gisven directory into a certain folder, and sorts them into their respective sub folders"
+	print "VM = Moves all videos from the given directory into a certain folder, and sorts them into their respective sub folders"
 	print "FS = Format Subdirectories: Formats an entire directory's subdirectories using VF"
 	print "FU = Format Undo: Undoes the most recent change recorded on the log for a given directory"
 
