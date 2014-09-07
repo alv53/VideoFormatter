@@ -16,6 +16,18 @@ def AddLeadingChars(value, maxLen, leadingChar):
 		returnVal = leadingChar + returnVal 
 	return returnVal
 
+# Checks if a list has duplicates
+# Called by GetNewNames
+# theList: the list to check for duplicates
+# Returns true or false
+def anyDup(theList):
+	seen = set()
+	for x in theList:
+		if x in seen: 
+			return True
+		seen.add(x)
+	return False
+
 # Used to get the new formatted names of the given files
 # Called by FormatDirectory
 # files: the list of all the files to get new names for
@@ -240,7 +252,7 @@ def FormatDirectory(dirToRename):
 				templog += line + "\n"
 		print "\nAre these new file names acceptable? (y - yes/n - no/file #s to alter). Unchanged lines will not appear."
 		response = raw_input()
-		if (response == 'y' or response =='n'):
+		if ((response == 'y' or response =='n')):
 			responded = True
 		elif response != "":
 			# Get new names manually
@@ -255,17 +267,18 @@ def FormatDirectory(dirToRename):
 				# Hide the ones we are manually changing before updating names. This makes sure the episode numbers are set correctly.
 				files.pop(int(ToChange))
 
-			newNames = GetNewNames(files)
+			newNames = GetNewNames(files, name)
 
 			# Insert the manually changed values to newNames and back to files
 			for ToChange in ManList:
 				newNames.insert(int(ToChange), TempNames.pop(0))
 				files.insert(int(ToChange), OldNames[int(ToChange)])
-
 	if response == 'n':
 		print "\nOk, bye!"
 		sys.exit()
-
+	if anyDup(newNames):
+		print "Duplicates in list, exiting to prevent file overwriting"
+		sys.exit()
 	# If we have altered some files
 	if not templog == "":	
 		time = datetime.datetime.now()
@@ -379,7 +392,7 @@ def main():
 	# Calls FormatDirectory
 	if (sys.argv[1] == "FD"):
 		if len(sys.argv) != 3:
-			print "Usage: ./" + os.path.basename(__file__) + " AF [directory with files]"
+			print "Usage: ./" + os.path.basename(__file__) + " FD [directory with files]"
 			sys.exit()
 		FormatDirectory(sys.argv[2])
 
